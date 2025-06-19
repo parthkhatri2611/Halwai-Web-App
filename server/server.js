@@ -1,3 +1,40 @@
+// const express = require('express');
+// const cloudinary = require('cloudinary').v2;
+// const cors = require('cors');
+// const dotenv = require('dotenv');
+// const multer = require('multer');
+// const PDFDocument = require('pdfkit');
+// const bodyParser = require('body-parser');
+// const fs = require('fs');
+// const path = require('path');
+// const QRCode = require('qrcode');
+
+// dotenv.config();
+// const app = express();
+
+// const upload = multer({ storage: multer.memoryStorage() });
+
+// app.use(cors({
+//   origin: [ 'https://shivshakticatering.netlify.app/','https://shivshakticatering.netlify.app/'],
+//   methods: ['GET', 'POST'],
+//   credentials: true
+// }));
+// app.use(express.json());
+// app.use(express.urlencoded({ extended: true }));
+// app.use(bodyParser.json({ limit: '10mb' }));
+
+// app.use((req, res, next) => {
+//   console.log(`Received ${req.method} request at ${req.url}`);
+//   next();
+// });
+
+// cloudinary.config({
+//   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+//   api_key: process.env.CLOUDINARY_API_KEY,
+//   api_secret: process.env.CLOUDINARY_API_SECRET,
+// });
+
+
 const express = require('express');
 const cloudinary = require('cloudinary').v2;
 const cors = require('cors');
@@ -15,7 +52,7 @@ const app = express();
 const upload = multer({ storage: multer.memoryStorage() });
 
 app.use(cors({
-  origin: [ 'https://shivshakticatering.netlify.app/','https://shivshakticatering.netlify.app/'],
+  origin: ['https://shivshakticatering.netlify.app', 'https://shivshakticatering.netlify.app/'],
   methods: ['GET', 'POST'],
   credentials: true
 }));
@@ -24,15 +61,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json({ limit: '10mb' }));
 
 app.use((req, res, next) => {
-  console.log(`Received ${req.method} request at ${req.url}`);
+  console.log(`Received ${req.method} request at ${req.url} from origin: ${req.get('Origin')}`);
   next();
 });
 
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
+
 
 const masalaItems = [
   { name: 'लाल मिर्च', quantity: 150, unit: 'gm' },
