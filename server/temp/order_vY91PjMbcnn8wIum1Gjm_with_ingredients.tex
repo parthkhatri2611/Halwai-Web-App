@@ -1,0 +1,39 @@
+
+      \documentclass[a4paper,12pt]{article}
+      \usepackage{geometry}
+      \geometry{margin=1in}
+      \usepackage{booktabs}
+      \usepackage{enumitem}
+      \usepackage{noto}
+      \usepackage{amsmath}
+      
+      % Define tickbox for blank column
+      \newcommand{\tickbox}{\rule{2mm}{2mm}}
+      
+      % Format units
+      \newcommand{\formatUnit}[1]{%
+        \ifcase\pdfmatch{0}{kg}{#1} kg%
+        \or\ifcase\pdfmatch{0}{gram}{#1} g%
+        \or\ifcase\pdfmatch{0}{litre}{#1} L%
+        \or\ifcase\pdfmatch{0}{liter}{#1} L%
+        \or\ifcase\pdfmatch{0}{packet}{#1} packet(s)%
+        \or\ifcase\pdfmatch{0}{piece}{#1} piece(s)%
+        \or\ifcase\pdfmatch{0}{ml}{#1} ml%
+        \or #1\fi\fi\fi\fi\fi\fi\fi
+      }
+      
+      \begin{document}
+      
+      \textbf{\Large Order Details}\\[0.5cm]
+      \begin{description}[leftmargin=0cm]
+        \item[Customer Name:] Customer hTZ3ghvaqKZZS4OwbkSI9WLQVKr1
+        \item[Number of Persons:] 100
+        \item[Function Date:] Thu Jun 12 2025
+        \item[Function Name:] Ghadi
+      \end{description}
+      \vspace{0.5cm}
+      \textbf{\large Khana Khazana Menu}\\[0.3cm]
+      \textbf{Khana Khazana: Dessert}\\[0.2cm]\textbf{rasgulla}\\\begin{tabular}{p{6cm} p{4cm} p{2cm}}\toprule \textbf{Ingredient} & \textbf{Quantity} & \textbf{Tick} \\ \midrule milk & 20 kg & \tickbox \\ \bottomrule\end{tabular}\\[0.3cm]\textbf{GULABJAMUN}\\\begin{tabular}{p{6cm} p{4cm} p{2cm}}\toprule \textbf{Ingredient} & \textbf{Quantity} & \textbf{Tick} \\ \midrule SUGAR & 200 1 & \tickbox \\ \bottomrule\end{tabular}\\[0.3cm]
+      
+      \end{document}
+    
