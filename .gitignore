@@ -7,7 +7,7 @@ client/.env
 server/.env
 
 # Ignore build folders (optional)
-client/build
+
 
 # OS-specific
 .DS_Store
