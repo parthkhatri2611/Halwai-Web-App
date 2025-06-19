@@ -15,7 +15,7 @@ const app = express();
 const upload = multer({ storage: multer.memoryStorage() });
 
 app.use(cors({
-  origin: ['https://shivshakticatering.netlify.app/'],
+  origin: [ 'https://shivshakticatering.netlify.app/','https://shivshakticatering.netlify.app/'],
   methods: ['GET', 'POST'],
   credentials: true
 }));
