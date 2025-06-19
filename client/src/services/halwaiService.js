@@ -6,7 +6,7 @@ const uploadImageToCloudinary = async (imageFile) => {
   try {
     const formData = new FormData();
     formData.append('image', imageFile);
-    const response = await axios.post('http://localhost:5000/upload-image', formData, {
+    const response = await axios.post('https://shivshakticatering.onrender.com/upload-image', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
     return response.data.url;

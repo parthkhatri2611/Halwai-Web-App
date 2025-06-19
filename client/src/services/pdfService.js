@@ -5,7 +5,7 @@ const generatePDF = async (order, withIngredients = false) => {
   try {
     const filename = `order_${order.orderId}_${withIngredients ? 'with_ingredients' : 'without_ingredients'}`;
     
-    console.log('Preparing to send request to: http://localhost:5000/api/compose-latex');
+    console.log('Preparing to send request to: https://shivshakticatering.onrender.com/api/compose-latex');
     console.log('withIngredients:', withIngredients);
     console.log('Order data:', JSON.stringify(order, null, 2));
 
