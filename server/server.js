@@ -15,7 +15,7 @@ const app = express();
 const upload = multer({ storage: multer.memoryStorage() });
 
 app.use(cors({
-  origin: ['http://localhost:3000', 'https://shivshakticatering.netlify.app/'],
+  origin: ['https://shivshakticatering.netlify.app/'],
   methods: ['GET', 'POST'],
   credentials: true
 }));
@@ -741,7 +741,7 @@ const addHeader = () => {
     currentY = rowY + 30;
 
     const qrCodeBuffer = await new Promise((resolve, reject) => {
-      QRCode.toBuffer('https://www.shivshakticatering.com/order/' + orderId, { width: 80 }, (err, buffer) => {
+      QRCode.toBuffer('https://shivshakticatering.netlify.app/' + orderId, { width: 80 }, (err, buffer) => {
         if (err) reject(err);
         else resolve(buffer);
       });
