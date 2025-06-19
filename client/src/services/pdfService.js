@@ -10,7 +10,7 @@ const generatePDF = async (order, withIngredients = false) => {
     console.log('Order data:', JSON.stringify(order, null, 2));
 
     const response = await axios.post(
-      'https://shivshakticatering.netlify.app/api/compose-latex',
+      'https://shivshakticatering.onrender.com/api/compose-latex',
       {
         order,
         withIngredients,
