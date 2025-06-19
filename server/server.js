@@ -774,10 +774,7 @@ const addHeader = () => {
     currentY = rowY + 30;
 
     const qrCodeBuffer = await new Promise((resolve, reject) => {
-      QRCode.toBuffer('https://shivshakticatering.netlify.app/' + orderId, { width: 80 }, (err, buffer) => {
-        if (err) reject(err);
-        else resolve(buffer);
-      });
+      QRCode.toBuffer('https://shivshakticatering.netlify.app/');
     });
     doc.image(qrCodeBuffer, 485, currentY - 20, { width: 80 });
 
