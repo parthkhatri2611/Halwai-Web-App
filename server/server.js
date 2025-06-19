@@ -15,7 +15,7 @@ const app = express();
 const upload = multer({ storage: multer.memoryStorage() });
 
 app.use(cors({
-  origin: ['http://localhost:3000', 'https://your-netlify-app.netlify.app'],
+  origin: ['http://localhost:3000', 'https://shivshakticatering.netlify.app/'],
   methods: ['GET', 'POST'],
   credentials: true
 }));
