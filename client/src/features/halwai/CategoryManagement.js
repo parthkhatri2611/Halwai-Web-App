@@ -763,7 +763,7 @@ const DishManagement = () => {
                                 type="number"
                                 step="0.1"
                                 fullWidth
-                                {...register(`ingredients[${index}].quantity`)}
+                                {...register(`ingredients[${index}].quantity`, { valueAsNumber: true })}
                                 error={!!errors.ingredients?.[index]?.quantity}
                                 helperText={errors.ingredients?.[index]?.quantity?.message}
                                 sx={{
