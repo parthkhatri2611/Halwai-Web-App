@@ -46,9 +46,10 @@ const dishSchema = yup.object({
       name: yup.string().required('Ingredient name is required'),
       quantity: yup
         .number()
-        .typeError('Quantity must be a number')
+        .typeError('Quantity must be a number (e.g., 2 or 2.5)')
         .positive('Quantity must be positive')
-        .required('Quantity is required'),
+        .required('Quantity is required')
+        .transform((value, originalValue) => (originalValue === '' ? undefined : value)), // Handle empty strings
       unit: yup.string().required('Unit is required'),
     })
   ).min(1, 'At least one ingredient is required'),
@@ -607,28 +608,30 @@ const DishManagement = () => {
     }
   };
 
-  const onSubmit = async (data) => {
-    try {
-      const formattedIngredients = data.ingredients.map(ing => ({
-        name: ing.name,
-        quantity: parseFloat(ing.quantity), // Explicitly parse to float
-        unit: ing.unit,
-      }));
-      if (editingDish) {
-        await updateDish(user.uid, subCategoryId, editingDish.id, { ...data, ingredients: formattedIngredients }, dishImage);
-        setEditingDish(null);
-      } else {
-        await addDish(user.uid, subCategoryId, { ...data, ingredients: formattedIngredients }, dishImage);
-      }
-      reset();
-      setShowForm(false);
-      setImagePreview(null);
-      setDishImage(null);
-      fetchDishes();
-    } catch (error) {
-      alert('Failed to save dish: ' + error.message);
+const onSubmit = async (data) => {
+  try {
+    console.log('Form Data:', data); 
+    const formattedIngredients = data.ingredients.map(ing => ({
+      name: ing.name,
+      quantity: parseFloat(ing.quantity), 
+      unit: ing.unit,
+    }));
+    if (editingDish) {
+      await updateDish(user.uid, subCategoryId, editingDish.id, { ...data, ingredients: formattedIngredients }, dishImage);
+      setEditingDish(null);
+    } else {
+      await addDish(user.uid, subCategoryId, { ...data, ingredients: formattedIngredients }, dishImage);
     }
-  };
+    reset();
+    setShowForm(false);
+    setImagePreview(null);
+    setDishImage(null);
+    fetchDishes();
+  } catch (error) {
+    console.error('Submission Error:', error); 
+    alert('Failed to save dish: ' + error.message);
+  }
+};
 
   const handleDelete = async () => {
     try {
@@ -783,8 +786,7 @@ const DishManagement = () => {
                             <Grid item xs={12} sm={3}>
                               <TextField
                                 label="Quantity"
-                                type="number"
-                                step="any"
+                                type="text" 
                                 fullWidth
                                 {...register(`ingredients[${index}].quantity`)}
                                 error={!!errors.ingredients?.[index]?.quantity}
