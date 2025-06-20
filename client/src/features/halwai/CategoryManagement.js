@@ -761,7 +761,7 @@ const DishManagement = () => {
                               <TextField
                                 label="Quantity"
                                 type="number"
-                                step="0.1"
+                                step="any"
                                 fullWidth
                                 {...register(`ingredients[${index}].quantity`, { valueAsNumber: true })}
                                 error={!!errors.ingredients?.[index]?.quantity}
