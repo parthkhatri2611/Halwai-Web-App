@@ -1694,11 +1694,11 @@ const addHeader = () => {
       currentY += 20;
 
       const checklist = [
-        { task: 'Verify all masala items are packed', status: '☐' },
-        { task: 'Confirm disposable items quantity', status: '☐' },
-        { task: 'Check gharelu saman availability', status: '☐' },
-        { task: 'Ensure tent items are ready', status: '☐' },
-        { task: 'Review menu with chef', status: '☐' },
+        { task: 'Verify all masala items are packed', status: ' ' },
+        { task: 'Confirm disposable items quantity', status: ' ' },
+        { task: 'Check gharelu saman availability', status: ' ' },
+        { task: 'Ensure tent items are ready', status: ' ' },
+        { task: 'Review menu with chef', status: ' ' },
       ];
 
       doc
@@ -1986,7 +1986,7 @@ while (remainingIngredients.length > 0) {
     ghareluSaman,
     'Gharelu Items',
     numberOfPersons,
-    false,
+    true,
     checkPageBreak
   );
   currentY = renderTable(
@@ -1995,7 +1995,7 @@ while (remainingIngredients.length > 0) {
     tentItems,
     'Tent Items',
     numberOfPersons,
-    false,
+    true,
     checkPageBreak
   );
 

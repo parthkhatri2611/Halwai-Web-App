@@ -24,17 +24,40 @@ const subCategorySchema = yup.object({
   name: yup.string().required('Sub-category name is required'),
 }).required();
 
+// const dishSchema = yup.object({
+//   name: yup.string().required('Dish name is required'),
+//   veg: yup.string().oneOf(['veg', 'non-veg'], 'Please select Veg or Non-Veg').required('Veg/Non-Veg is required'),
+//   ingredients: yup.array().of(
+//     yup.object({
+//       name: yup.string().required('Ingredient name is required'),
+//       quantity: yup.number().positive('Quantity must be positive').required('Quantity is required'),
+//       unit: yup.string().required('Unit is required'),
+//     })
+//   ).min(1, 'At least one ingredient is required'),
+// }).required();
+
+
+
 const dishSchema = yup.object({
   name: yup.string().required('Dish name is required'),
   veg: yup.string().oneOf(['veg', 'non-veg'], 'Please select Veg or Non-Veg').required('Veg/Non-Veg is required'),
   ingredients: yup.array().of(
     yup.object({
       name: yup.string().required('Ingredient name is required'),
-      quantity: yup.number().positive('Quantity must be positive').required('Quantity is required'),
+      quantity: yup
+        .number()
+        .typeError('Quantity must be a number')
+        .positive('Quantity must be positive')
+        .required('Quantity is required'),
       unit: yup.string().required('Unit is required'),
     })
   ).min(1, 'At least one ingredient is required'),
 }).required();
+
+
+
+
+
 
 const palaceSchema = yup.object({
   name: yup.string().required('Palace name is required'),
@@ -588,7 +611,7 @@ const DishManagement = () => {
     try {
       const formattedIngredients = data.ingredients.map(ing => ({
         name: ing.name,
-        quantity: Number(ing.quantity),
+        quantity: parseFloat(ing.quantity), // Explicitly parse to float
         unit: ing.unit,
       }));
       if (editingDish) {
@@ -763,7 +786,7 @@ const DishManagement = () => {
                                 type="number"
                                 step="any"
                                 fullWidth
-                                {...register(`ingredients[${index}].quantity`, { valueAsNumber: true })}
+                                {...register(`ingredients[${index}].quantity`)}
                                 error={!!errors.ingredients?.[index]?.quantity}
                                 helperText={errors.ingredients?.[index]?.quantity?.message}
                                 sx={{
