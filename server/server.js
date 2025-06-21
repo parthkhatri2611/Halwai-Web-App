@@ -5114,7 +5114,6 @@
 // const PORT = process.env.PORT || 5000;
 // app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
-
 const express = require('express');
 const cloudinary = require('cloudinary').v2;
 const cors = require('cors');
@@ -5351,7 +5350,7 @@ const calculateTotals = (items, numberOfPersons, masalaItems) => {
   let totalOil = 0;
   let totalGhee = 0;
 
-  const khanaKhazanaCategories = ['Vegetables', 'Sweets'];
+  const khanaKhazanaCategories = ['Khana Khazana'];
   const categories = {};
   const dishCounts = {};
 
@@ -5516,6 +5515,59 @@ const renderTable = (doc, currentY, items, title, numberOfPersons, scale = false
   return currentY + 10;
 };
 
+const renderItemsWithImages = (doc, currentY, items, title, checkPageBreak) => {
+  currentY = checkPageBreak(currentY, 40, `category-${title}`);
+  doc
+    .fillColor('#800000')
+    .font('Merriweather-Bold')
+    .fontSize(16)
+    .text(title, 40, currentY, { align: 'left', lineBreak: false });
+  currentY += 20;
+
+  const itemHeight = 60;
+  const tableLeft = 40;
+  const tableWidth = 505;
+  let remainingItems = [...items];
+
+  while (remainingItems.length > 0) {
+    currentY = checkPageBreak(currentY, itemHeight + 10, `items-${title}`);
+    const rowsPerPage = Math.floor((doc.page.height - currentY - 80) / itemHeight);
+    const currentBatch = remainingItems.slice(0, rowsPerPage || 1);
+    remainingItems = remainingItems.slice(rowsPerPage);
+
+    currentBatch.forEach((item, index) => {
+      const rowY = currentY + index * itemHeight;
+      doc.fillColor(index % 2 === 0 ? '#FFFDD0' : '#FFFFFF')
+         .rect(tableLeft, rowY, tableWidth, itemHeight)
+         .fill();
+
+      if (item.imageUrl) {
+        try {
+          doc.image(item.imageUrl, tableLeft + 5, rowY + 5, { width: 50, height: 50 });
+        } catch (error) {
+          console.warn(`Failed to load image for ${item.name}: ${error.message}`);
+        }
+      }
+
+      const font = isHindi(item.name) ? 'NotoSerifDevanagari-Regular' : 'Merriweather-Regular';
+      doc.fillColor('black')
+         .font(font)
+         .fontSize(12)
+         .text(truncateText(doc, item.name, 400), tableLeft + 60, rowY + 25, { lineBreak: false });
+    });
+
+    currentY += currentBatch.length * itemHeight + 10;
+    doc.y = currentY;
+  }
+
+  doc.strokeColor('#800000')
+     .lineWidth(0.5)
+     .roundedRect(tableLeft, currentY - (itemHeight * items.length + 20), tableWidth, itemHeight * items.length + 20, 5)
+     .stroke();
+
+  return currentY + 10;
+};
+
 app.post('/api/compose-latex', async (req, res) => {
   try {
     console.log('Received POST request at /api/compose-latex');
@@ -5601,11 +5653,6 @@ app.post('/api/compose-latex', async (req, res) => {
         .font('NotoSerifDevanagari-Bold')
         .fontSize(24)
         .text('शिव शक्ति कैटरिंग', 50, 150, { align: 'center' });
-      // doc
-      //   .font('Merriweather-Regular')
-      //   .fontSize(18)
-      //   .fillColor('#2F4F4F')
-      //   .text(`Order ID: ${orderId || 'N/A'}`, 50, 200, { align: 'center' });
       doc
         .font('Merriweather-Regular')
         .fontSize(16)
@@ -5640,21 +5687,21 @@ app.post('/api/compose-latex', async (req, res) => {
       doc.addPage();
     };
 
-const addHeader = () => {
-  doc
-    .fillColor('#FF8C00')
-    .rect(30, 40, doc.page.width - 60, 30)
-    .fill();
-  doc
-    .fillColor('white')
-    .font('Merriweather-Bold')
-    .fontSize(14)
-    .text('Shiv Shakti Catering', 30, 50, { align: 'center', lineBreak: false });
-  doc
-    .fillColor('#800000')
-    .rect(30, 72, doc.page.width - 60, 2)
-    .fill();
-};
+    const addHeader = () => {
+      doc
+        .fillColor('#FF8C00')
+        .rect(30, 40, doc.page.width - 60, 30)
+        .fill();
+      doc
+        .fillColor('white')
+        .font('Merriweather-Bold')
+        .fontSize(14)
+        .text('Shiv Shakti Catering', 30, 50, { align: 'center', lineBreak: 'false' });
+      doc
+        .fillColor('#800000')
+        .rect(30, 72, doc.page.width - 60, 2)
+        .fill();
+    };
 
     const addFooter = () => {
       const pages = doc.bufferedPageRange();
@@ -5858,11 +5905,10 @@ const addHeader = () => {
     currentY = rowY + 30;
 
     const qrCodeBuffer = await new Promise((resolve, reject) => {
-      QRCode.toBuffer('https://shivshakticatering.netlify.app/' + orderId, { width: 80 }, (err, buffer) => {
+      QRCode.toBuffer('https://shivshakticatering.netlify.app/' + (orderId || ''), { width: 80 }, (err, buffer) => {
         if (err) reject(err);
         else resolve(buffer);
       });
-      QRCode.toBuffer('https://shivshakticatering.netlify.app/');
     });
     doc.image(qrCodeBuffer, 485, currentY - 20, { width: 80 });
 
@@ -5878,205 +5924,214 @@ const addHeader = () => {
       .font('Merriweather-Bold')
       .fontSize(18)
       .fillColor('#800000')
-      .text('Khana Khazana Menu', 30, currentY);
+      .text('Order Items', 30, currentY);
     currentY += 30;
 
-    const khanaKhazanaCategories = ['Vegetables', 'Sweets'];
     const categories = {};
     const dishCounts = {};
 
     (items || []).forEach((item) => {
-      const { categoryName, dishName, ingredients, halwaiId, categoryId, veg } = item || {};
-      if (!categoryName || !dishName) return;
+      const { categoryName, name, type, quantity, veg, address, capacity, description, imageUrl, ingredients } = item || {};
+      if (!categoryName || !name) return;
       if (!categories[categoryName]) {
         categories[categoryName] = [];
         dishCounts[categoryName] = 0;
       }
-      categories[categoryName].push({ dishName, ingredients: ingredients || [], halwaiId, categoryId, veg });
-      if (khanaKhazanaCategories.includes(categoryName)) dishCounts[categoryName]++;
+      let displayName = name;
+      if (type === 'dish') {
+        displayName += veg === 'veg' ? ' (Veg)' : veg === 'non-veg' ? ' (Non-Veg)' : '';
+        dishCounts[categoryName]++;
+      } else if (type === 'palace') {
+        displayName += ` (${address || 'N/A'}, Capacity: ${capacity || 'N/A'})`;
+      } else if (type === 'decor') {
+        displayName += ` (${description || 'N/A'})`;
+      }
+      categories[categoryName].push({
+        name: displayName,
+        type,
+        quantity: quantity || 1,
+        imageUrl,
+        ingredients: ingredients || [],
+        veg
+      });
     });
 
-    let categoryIndex = 1;
-    for (const [categoryName, dishes] of Object.entries(categories)) {
+    for (const [categoryName, categoryItems] of Object.entries(categories)) {
       currentY = checkPageBreak(currentY, 40, `category-${categoryName}`);
-      doc
-        .fillColor('#800000')
-        .rect(30, currentY - 5, 535, 25)
-        .fill();
-      doc
-        .fillColor('white')
-        .font('Merriweather-Bold')
-        .fontSize(12)
-        .text(`${categoryName} (${dishes.length} Dishes)`, 40, currentY + 5, { lineBreak: false });
-      currentY += 30;
+      if (!withIngredients) {
+        currentY = renderItemsWithImages(
+          doc,
+          currentY,
+          categoryItems,
+          categoryName,
+          checkPageBreak
+        );
+      } else {
+        const tableItems = categoryItems.map(item => ({
+          name: item.name,
+          quantity: item.quantity,
+          unit: item.type === 'dish' ? 'servings' : 'unit'
+        }));
+        currentY = renderTable(
+          doc,
+          currentY,
+          tableItems,
+          categoryName,
+          numberOfPersons,
+          false,
+          checkPageBreak
+        );
 
-      let dishIndex = 1;
-      for (const dish of dishes) {
-        currentY = checkPageBreak(currentY, 30, `dish-${dish.dishName}`);
-        const vegLabel = dish.veg === 'veg' ? '(Veg)' : dish.veg === 'non-veg' ? '(Non-Veg)' : '';
-        const dishFont = isHindi(dish.dishName) ? 'NotoSerifDevanagari-Bold' : 'Merriweather-Bold';
-        doc
-          .font(dishFont)
-          .fontSize(12)
-          .fillColor('#2F4F4F')
-          .text(`${dishIndex}. ${truncateText(doc, dish.dishName, 450)} ${vegLabel}`, 40, currentY, {
-            lineBreak: false,
-          });
-        currentY += 20;
-        dishIndex++;
+        for (const item of categoryItems.filter(i => i.type === 'dish')) {
+          if (Array.isArray(item.ingredients) && item.ingredients.length > 0) {
+            const scaleFactor = numberOfPersons / (50 * (dishCounts[categoryName] || 1));
+            const ingredients = item.ingredients.slice(0, 50);
+            const rowHeight = 20;
+            const headerHeight = 24;
 
-        if (withIngredients && Array.isArray(dish.ingredients) && dish.ingredients.length > 0) {
-          const scaleFactor = khanaKhazanaCategories.includes(categoryName)
-            ? numberOfPersons / (50 * (dishCounts[categoryName] || 1))
-            : numberOfPersons / 50;
+            let maxIngWidth = 200;
+            let maxQtyWidth = 100;
+            ingredients.forEach((ing) => {
+              const qty = Number((ing.quantity * scaleFactor).toFixed(2));
+              const ingText = truncateText(doc, ing.name || 'Unknown', 300);
+              const qtyText = formatQuantity(qty, ing.unit);
+              maxIngWidth = Math.min(300, Math.max(maxIngWidth, doc.widthOfString(ingText)));
+              maxQtyWidth = Math.min(150, Math.max(maxQtyWidth, doc.widthOfString(qtyText)));
+            });
 
-          const ingredients = dish.ingredients.slice(0, 50);
-          const rowHeight = 20;
-          const headerHeight = 24;
+            const tableLeft = 60;
+            const col1 = tableLeft;
+            const col2 = col1 + maxIngWidth + 15;
+            const col3 = col2 + maxQtyWidth + 15;
+            const tableWidth = Math.min(505, col3 + 50 - tableLeft);
 
-          let maxIngWidth = 200;
-          let maxQtyWidth = 100;
-ingredients.forEach((ing) => {
-  const qty = Number((ing.quantity * scaleFactor).toFixed(2));
-  const ingText = truncateText(doc, ing.name || 'Unknown', 300);
-  const qtyText = formatQuantity(qty, ing.unit);
-  maxIngWidth = Math.min(300, Math.max(maxIngWidth, doc.widthOfString(ingText)));
-  maxQtyWidth = Math.min(150, Math.max(maxQtyWidth, doc.widthOfString(qtyText)));
-});
+            let remainingIngredients = [...ingredients];
+            while (remainingIngredients.length > 0) {
+              currentY = checkPageBreak(currentY, headerHeight + rowHeight, `table-${item.name}`);
 
-const tableLeft = 60;
-const col1 = tableLeft;
-const col2 = col1 + maxIngWidth + 15;
-const col3 = col2 + maxQtyWidth + 15;
-const tableWidth = Math.min(505, col3 + 50 - tableLeft);
+              const rowsPerPage = Math.floor((doc.page.height - currentY - headerHeight - 80) / rowHeight);
+              const currentBatch = remainingIngredients.slice(0, rowsPerPage || 1);
+              remainingIngredients = remainingIngredients.slice(rowsPerPage);
 
-let remainingIngredients = [...ingredients];
-while (remainingIngredients.length > 0) {
-  currentY = checkPageBreak(currentY, headerHeight + rowHeight, `table-${dish.dishName}`);
+              const tableTop = currentY;
 
-  const rowsPerPage = Math.floor((doc.page.height - currentY - headerHeight - 80) / rowHeight);
-  const currentBatch = remainingIngredients.slice(0, rowsPerPage || 1);
-  remainingIngredients = remainingIngredients.slice(rowsPerPage);
+              doc
+                .fillColor('#FF8C00')
+                .roundedRect(tableLeft, tableTop, tableWidth, headerHeight, 5)
+                .fill();
+              doc
+                .fillColor('white')
+                .font('Merriweather-Bold')
+                .fontSize(10)
+                .text('Ingredient', col1 + 5, tableTop + 5, { lineBreak: false })
+                .text('Quantity', col2 + 5, tableTop + 5, { lineBreak: false })
+                .text('Remark', col3 + 2, tableTop + 5, { lineBreak: false });
 
-  const tableTop = currentY;
+              let rowY = tableTop + headerHeight;
+              let rowIndex = 0;
+              currentBatch.forEach((ing) => {
+                if (rowIndex % 2 === 0) {
+                  doc.fillColor('#FFFDD0').rect(tableLeft, rowY, tableWidth, rowHeight).fill();
+                } else {
+                  doc.fillColor('#FFFFFF').rect(tableLeft, rowY, tableWidth, rowHeight).fill();
+                }
+                doc.fillColor('black');
+                const qty = Number((ing.quantity * scaleFactor).toFixed(2));
+                const ingFont = isHindi(ing.name) ? 'NotoSerifDevanagari-Regular' : 'Merriweather-Regular';
+                doc
+                  .font(ingFont)
+                  .fontSize(10)
+                  .text(truncateText(doc, ing.name || 'Unknown', maxIngWidth), col1 + 5, rowY + 5, { lineBreak: false });
+                doc
+                  .font('Merriweather-Regular')
+                  .text(formatQuantity(qty, ing.unit), col2 + 5, rowY + 5, { lineBreak: false });
+                doc.text(' ', col3 + 5, rowY + 5, { lineBreak: false });
+                rowIndex++;
+                rowY += rowHeight;
+              });
 
-  doc
-    .fillColor('#FF8C00')
-    .roundedRect(tableLeft, tableTop, tableWidth, headerHeight, 5)
-    .fill();
-  doc
-    .fillColor('white')
-    .font('Merriweather-Bold')
-    .fontSize(10)
-    .text('Ingredient', col1 + 5, tableTop + 5, { lineBreak: false })
-    .text('Quantity', col2 + 5, tableTop + 5, { lineBreak: false })
-    .text('Remark', col3 + 2, tableTop + 5, { lineBreak: false });
+              doc
+                .strokeColor('#800000')
+                .lineWidth(0.5)
+                .roundedRect(tableLeft, tableTop, tableWidth, rowY - tableTop, 5)
+                .stroke()
+                .moveTo(col2, tableTop)
+                .lineTo(col2, rowY)
+                .moveTo(col3, tableTop)
+                .lineTo(col3, rowY)
+                .stroke();
 
-  let rowY = tableTop + headerHeight;
-  let rowIndex = 0;
-  currentBatch.forEach((ing) => {
-    if (rowIndex % 2 === 0) {
-      doc.fillColor('#FFFDD0').rect(tableLeft, rowY, tableWidth, rowHeight).fill();
-    } else {
-      doc.fillColor('#FFFFFF').rect(tableLeft, rowY, tableWidth, rowHeight).fill();
-    }
-    doc.fillColor('black');
-    const qty = Number((ing.quantity * scaleFactor).toFixed(2));
-    const ingFont = isHindi(ing.name) ? 'NotoSerifDevanagari-Regular' : 'Merriweather-Regular';
-    doc
-      .font(ingFont)
-      .fontSize(10)
-      .text(truncateText(doc, ing.name || 'Unknown', maxIngWidth), col1 + 5, rowY + 5, { lineBreak: false });
-    doc
-      .font('Merriweather-Regular')
-      .text(formatQuantity(qty, ing.unit), col2 + 5, rowY + 5, { lineBreak: false });
-    doc.text(' ', col3 + 5, rowY + 5, { lineBreak: false });
-    rowIndex++;
-    rowY += rowHeight;
-  });
-
-  doc
-    .strokeColor('#800000')
-    .lineWidth(0.5)
-    .roundedRect(tableLeft, tableTop, tableWidth, rowY - tableTop, 5)
-    .stroke()
-    .moveTo(col2, tableTop)
-    .lineTo(col2, rowY)
-    .moveTo(col3, tableTop)
-    .lineTo(col3, rowY)
-    .stroke();
-
-  currentY = rowY + 15;
-  doc.y = currentY;
-}
+              currentY = rowY + 15;
+              doc.y = currentY;
+            }
+          }
         }
       }
-      currentY = checkPageBreak(currentY, 20, `post-category-${categoryName}`);
     }
 
     if (withIngredients) {
-  currentY = renderTable(
-    doc,
-    currentY,
-    masalaItems,
-    'Masala Items',
-    numberOfPersons,
-    true,
-    checkPageBreak
-  );
-  currentY = renderTable(
-    doc,
-    currentY,
-    disposableItems,
-    'Disposable Items',
-    numberOfPersons,
-    true,
-    checkPageBreak
-  );
-  currentY = renderTable(
-    doc,
-    currentY,
-    ghareluSaman,
-    'Gharelu Items',
-    numberOfPersons,
-    true,
-    checkPageBreak
-  );
-  currentY = renderTable(
-    doc,
-    currentY,
-    tentItems,
-    'Tent Items',
-    numberOfPersons,
-    true,
-    checkPageBreak
-  );
+      currentY = renderTable(
+        doc,
+        currentY,
+        masalaItems,
+        'Masala Items',
+        numberOfPersons,
+        true,
+        checkPageBreak
+      );
+      currentY = renderTable(
+        doc,
+        currentY,
+        disposableItems,
+        'Disposable Items',
+        numberOfPersons,
+        true,
+        checkPageBreak
+      );
+      currentY = renderTable(
+        doc,
+        currentY,
+        ghareluSaman,
+        'Gharelu Items',
+        numberOfPersons,
+        true,
+        checkPageBreak
+      );
+      currentY = renderTable(
+        doc,
+        currentY,
+        tentItems,
+        'Tent Items',
+        numberOfPersons,
+        true,
+        checkPageBreak
+      );
 
-  currentY = checkPageBreak(currentY, 60, 'totals');
-  doc
-    .font('Merriweather-Bold')
-    .fontSize(14)
-    .fillColor('#800000')
-    .text('Total Consumption', 40, currentY);
-  currentY += 20;
-  const { totalOil, totalGhee } = calculateTotals(items, numberOfPersons, masalaItems);
-  doc
-    .font('Merriweather-Regular')
-    .fontSize(12)
-    .fillColor('black')
-    .text(`Total Oil: ${totalOil}`, 50, currentY, { lineBreak: false });
-  doc
-    .font('NotoSerifDevanagari-Regular')
-    .text(' लीटर', 50 + doc.widthOfString(`Total Oil: ${totalOil}`), currentY, { lineBreak: false });
-  currentY += 20;
-  doc
-    .font('Merriweather-Regular')
-    .text(`Total Ghee: ${totalGhee}`, 50, currentY, { lineBreak: false });
-  doc
-    .font('NotoSerifDevanagari-Regular')
-    .text(' लीटर', 50 + doc.widthOfString(`Total Ghee: ${totalGhee}`), currentY, { lineBreak: false });
-  currentY += 20;
-}
+      currentY = checkPageBreak(currentY, 60, 'totals');
+      doc
+        .font('Merriweather-Bold')
+        .fontSize(14)
+        .fillColor('#800000')
+        .text('Total Consumption', 40, currentY);
+      currentY += 20;
+      const { totalOil, totalGhee } = calculateTotals(items, numberOfPersons, masalaItems);
+      doc
+        .font('Merriweather-Regular')
+        .fontSize(12)
+        .fillColor('black')
+        .text(`Total Oil: ${totalOil}`, 50, currentY, { lineBreak: false });
+      doc
+        .font('NotoSerifDevanagari-Regular')
+        .text(' लीटर', 50 + doc.widthOfString(`Total Oil: ${totalOil}`), currentY, { lineBreak: false });
+      currentY += 20;
+      doc
+        .font('Merriweather-Regular')
+        .text(`Total Ghee: ${totalGhee}`, 50, currentY, { lineBreak: false });
+      doc
+        .font('NotoSerifDevanagari-Regular')
+        .text(' लीटर', 50 + doc.widthOfString(`Total Ghee: ${totalGhee}`), currentY, { lineBreak: false });
+      currentY += 20;
+    }
 
     const { totalOil, totalGhee } = calculateTotals(items, numberOfPersons, masalaItems);
     addSummaryPage(categories, totalOil, totalGhee, dishCounts);
