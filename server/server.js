@@ -3510,7 +3510,7 @@ app.post('/api/compose-latex', async (req, res) => {
       throw new Error('Font registration failed. Ensure font files are in the fonts/ directory.');
     }
 
-    const tempDir = path.join('', 'temp');
+    const tempDir = path.join(__dirname, 'temp');
     const pdfFile = path.join(tempDir, `${filename}.pdf`);
 
     if (!fs.existsSync(tempDir)) fs.mkdirSync(tempDir, { recursive: true });
@@ -3780,14 +3780,14 @@ app.post('/api/compose-latex', async (req, res) => {
     doc.font('Merriweather-Regular').fontSize(10);
     details.forEach((detail, index) => {
       if (index % 2 === 0) {
-        doc.fillColor('#FFFDD0').rect(tableLeft, rowY, rowWidth, 20).fill();
+        doc.fillColor('#FFFDD0').rect(tableLeft, rowY, tableWidth, 20).fill();
       } else {
-        doc.fillColor('#FFFFFF').rect(tableWidth, rowY, tableLeft, 20).fill();
+        doc.fillColor('#FFFFFF').rect(tableLeft, rowY, tableWidth, 20).fill();
       }
       doc.fillColor('black');
       doc.text(detail.label, col1 + 10, rowY + 5, { lineBreak: false });
       const font = isHindi(detail.value) ? 'NotoSerifDevanagari-Regular' : 'Merriweather-Regular';
-      doc.text(detail.value, col2 + 10, rowY + 5, { font: font, lineBreak: false });
+      doc.font(font).text(detail.value, col2 + 10, rowY + 5, { lineBreak: false });
       rowY += 20;
     });
 
@@ -3800,11 +3800,10 @@ app.post('/api/compose-latex', async (req, res) => {
     currentY = rowY + 30;
 
     const qrCodeBuffer = await new Promise((resolve, reject) => {
-      QRCode.toBuffer('https://shivshakticatering.netlify.app/' + orderId, { width: 80 }, (err, buffer) => {
-        if (err) reject(error);
+      QRCode.toBuffer('https://shivshakticatering.netlify.app/' + (orderId || ''), { width: 80 }, (err, buffer) => {
+        if (err) reject(err);
         else resolve(buffer);
       });
-      QRCode.toBuffer('https://shivshakticatering.netlify.app/');
     });
     doc.image(qrCodeBuffer, 485, currentY - 20, { width: 80 });
 
@@ -3816,7 +3815,11 @@ app.post('/api/compose-latex', async (req, res) => {
       .stroke();
 
     currentY = checkPageBreak(currentY + 30, 50, 'menu');
-    doc.text('Order Items', 30, currentY, { font: 'Merriweather-Bold', size: 18, fillColor: '#800000' });
+    doc
+      .font('Merriweather-Bold')
+      .fontSize(18)
+      .fillColor('#800000')
+      .text('Order Items', 30, currentY);
     currentY += 30;
 
     const renderItemsWithImages = (doc, currentY, items, title, checkPageBreak) => {
