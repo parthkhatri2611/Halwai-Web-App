@@ -5594,10 +5594,11 @@ const renderIngredientsTable = (doc, currentY, ingredients, numberOfPersons, sca
 
   while (remainingIngredients.length > 0) {
     currentY = checkPageBreak(currentY, headerHeight + rowHeight, `table-${itemName}`);
+    console.log(`Rendering ingredients table for ${itemName}, remaining: ${remainingIngredients.length}`);
 
     const rowsPerPage = Math.floor((doc.page.height - currentY - headerHeight - 80) / rowHeight);
     const currentBatch = remainingIngredients.slice(0, rowsPerPage || 1);
-    remainingItems = remainingIngredients.slice(rowsPerPage);
+    remainingIngredients = remainingIngredients.slice(rowsPerPage);
 
     const tableTop = currentY;
 
