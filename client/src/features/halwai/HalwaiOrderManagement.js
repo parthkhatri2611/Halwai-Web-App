@@ -457,7 +457,7 @@ const HalwaiOrderManagement = () => {
                           <CardTypography variant="h6" sx={{ mb: 1 }}>
                             Items
                           </CardTypography>
-                          <List dense>
+                          {/* <List dense>
                             {(order.items && Array.isArray(order.items) ? order.items : []).map((item, index) => (
                               <ListItem key={index} sx={{ py: 0.5 }}>
                                 <ListItemText
@@ -474,7 +474,49 @@ const HalwaiOrderManagement = () => {
                                 />
                               </ListItem>
                             ))}
-                          </List>
+                          </List> */}
+                          <List dense>
+  {(order.items && Array.isArray(order.items) ? order.items : []).map((item, index) => (
+    <ListItem key={`${item.itemId}-${item.type}-${index}`} sx={{ py: 0.5 }}>
+      <ListItemText
+        primary={
+          <CardTypography variant="body1">
+            {item.categoryName || 'Unknown Category'}: {item.name || 'Unknown Item'} ({item.type || 'N/A'})
+          </CardTypography>
+        }
+        secondary={
+          <BodyTypography variant="body2">
+            {item.type === 'dish' && (
+              <>
+                Veg: {item.veg || 'N/A'}
+                <br />
+                Ingredients:{' '}
+                {(item.ingredients && Array.isArray(item.ingredients)
+                  ? item.ingredients
+                  : []
+                ).map(ing => `${ing.name || 'Unknown'}: ${ing.quantity || 0} ${ing.unit || ''}`).join(', ') || 'None'}
+              </>
+            )}
+            {item.type === 'palace' && (
+              <>
+                Address: {item.address || 'N/A'}
+                <br />
+                Capacity: {item.capacity || 'N/A'}
+              </>
+            )}
+            {item.type === 'decor' && (
+              <>
+                Description: {item.description || 'No description available'}
+              </>
+            )}
+            <br />
+            Quantity: {item.quantity || 1}
+          </BodyTypography>
+        }
+      />
+    </ListItem>
+  ))}
+</List>
                         </CardContent>
                         <CardActions sx={{ justifyContent: 'center', flexWrap: 'wrap', gap: 1, p: 2 }}>
                           {order.status === 'pending' && (
@@ -549,7 +591,7 @@ const HalwaiOrderManagement = () => {
                     <CardTypography variant="h6" sx={{ mb: 1 }}>
                       Items
                     </CardTypography>
-                    <List dense>
+                    {/* <List dense>
                       {(selectedOrder.items && Array.isArray(selectedOrder.items) ? selectedOrder.items : []).map((item, index) => (
                         <ListItem key={index} sx={{ py: 0.5 }}>
                           <ListItemText
@@ -566,7 +608,49 @@ const HalwaiOrderManagement = () => {
                           />
                         </ListItem>
                       ))}
-                    </List>
+                    </List> */}
+                    <List dense>
+  {(selectedOrder.items && Array.isArray(selectedOrder.items) ? selectedOrder.items : []).map((item, index) => (
+    <ListItem key={`${item.itemId}-${item.type}-${index}`} sx={{ py: 0.5 }}>
+      <ListItemText
+        primary={
+          <CardTypography variant="body1">
+            {item.categoryName || 'Unknown Category'}: {item.name || 'Unknown Item'} ({item.type || 'N/A'})
+          </CardTypography>
+        }
+        secondary={
+          <BodyTypography variant="body2">
+            {item.type === 'dish' && (
+              <>
+                Veg: {item.veg || 'N/A'}
+                <br />
+                Ingredients:{' '}
+                {(item.ingredients && Array.isArray(item.ingredients)
+                  ? item.ingredients
+                  : []
+                ).map(ing => `${ing.name || 'Unknown'}: ${ing.quantity || 0} ${ing.unit || ''}`).join(', ') || 'None'}
+              </>
+            )}
+            {item.type === 'palace' && (
+              <>
+                Address: {item.address || 'N/A'}
+                <br />
+                Capacity: {item.capacity || 'N/A'}
+              </>
+            )}
+            {item.type === 'decor' && (
+              <>
+                Description: {item.description || 'No description available'}
+              </>
+            )}
+            <br />
+            Quantity: {item.quantity || 1}
+          </BodyTypography>
+        }
+      />
+    </ListItem>
+  ))}
+</List>
                   </>
                 )}
               </DialogContent>
