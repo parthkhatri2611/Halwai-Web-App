@@ -159,7 +159,7 @@ const CustomerOrderHistory = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.6, ease: 'easeOut' }}
-      >`
+      >
         <StyledBackgroundBox>
         <Navbar user={user ? { name: user.displayName || 'Customer' } : null} role="customer" />
         <StyledContainer>
@@ -211,58 +211,44 @@ const CustomerOrderHistory = () => {
                   <BodyTypography variant="h6" sx={{ p: 2 }}>
                     Items:
                   </BodyTypography>
-                  {/* <List>
+                  <List>
                     {(order.items && Array.isArray(order.items) ? order.items : []).map((item, index) => (
-                      <ListItem key={index}>
+                      <ListItem key={`${item.itemId}-${item.type}-${index}`}>
                         <ListItemText
-                          primary={`${item.categoryName || 'Unknown Category'}: ${item.dishName || 'Unknown Dish'} (${item.veg || 'Unknown'})`}
-                          secondary={`Ingredients: ${(item.ingredients && Array.isArray(item.ingredients) ? item.ingredients : []).map(ing => `${ing.name || 'Unknown'}: ${ing.quantity || 0} ${ing.unit || ''}`).join(', ') || 'None'}`}
+                          primary={`${item.categoryName || 'Unknown Category'}: ${item.name || 'Unknown Item'} (${item.type || 'Unknown'})`}
+                          secondary={
+                            <>
+                              {item.type === 'dish' && (
+                                <>
+                                  {/* Veg: {item.veg || 'N/A'} */}
+                                  <br />
+                                  {/* Quantity: {item.quantity || 1} */}
+                                </>
+                              )}
+                              {item.type === 'palace' && (
+                                <>
+                                  Address: {item.address || 'N/A'}
+                                  <br />
+                                  Capacity: {item.capacity || 'N/A'}
+                                  <br />
+                                  Quantity: {item.quantity || 1}
+                                </>
+                              )}
+                              {item.type === 'decor' && (
+                                <>
+                                  Description: {item.description || 'No description available'}
+                                  <br />
+                                  Quantity: {item.quantity || 1}
+                                </>
+                              )}
+                            </>
+                          }
                           primaryTypographyProps={{ fontFamily: '"Montserrat", sans-serif', color: '#4B4B4B' }}
                           secondaryTypographyProps={{ fontFamily: '"Montserrat", sans-serif', color: '#4B4B4B', opacity: 0.7 }}
                         />
                       </ListItem>
                     ))}
-                  </List> */}
-                  <List>
-  {(order.items && Array.isArray(order.items) ? order.items : []).map((item, index) => (
-    <ListItem key={`${item.itemId}-${item.type}-${index}`}>
-      <ListItemText
-        primary={`${item.categoryName || 'Unknown Category'}: ${item.name || 'Unknown Item'} (${item.type || 'Unknown'})`}
-        secondary={
-          <>
-            {item.type === 'dish' && (
-              <>
-                Veg: {item.veg || 'N/A'}
-                <br />
-                Ingredients:{' '}
-                {(item.ingredients && Array.isArray(item.ingredients)
-                  ? item.ingredients
-                  : []
-                ).map(ing => `${ing.name || 'Unknown'}: ${ing.quantity || 0} ${ing.unit || ''}`).join(', ') || 'None'}
-              </>
-            )}
-            {item.type === 'palace' && (
-              <>
-                Address: {item.address || 'N/A'}
-                <br />
-                Capacity: {item.capacity || 'N/A'}
-              </>
-            )}
-            {item.type === 'decor' && (
-              <>
-                Description: {item.description || 'No description available'}
-              </>
-            )}
-            <br />
-            Quantity: {item.quantity || 1}
-          </>
-        }
-        primaryTypographyProps={{ fontFamily: '"Montserrat", sans-serif', color: '#4B4B4B' }}
-        secondaryTypographyProps={{ fontFamily: '"Montserrat", sans-serif', color: '#4B4B4B', opacity: 0.7 }}
-      />
-    </ListItem>
-  ))}
-</List>
+                  </List>
                 </StyledBox>
               ))}
             </List>
