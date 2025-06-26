@@ -6198,7 +6198,7 @@ const bodyParser = require('body-parser');
 const fs = require('fs');
 const path = require('path');
 const QRCode = require('qrcode');
-const { db } = require('./firebaseConfig');
+// const { db } = require('./firebaseConfig');
 const { collection, getDocs } = require('firebase/firestore');
 
 dotenv.config();
