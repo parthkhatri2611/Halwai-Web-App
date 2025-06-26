@@ -8684,7 +8684,7 @@ const calculateTotals = (items, numberOfPersons, masalaItems) => {
     const { categoryName, subCategoryId, type } = item || {};
     if (!categoryName || type !== 'dish') return;
     if (khanaKhazanaCategories.includes(categoryName)) {
-      const subCategoryName = subCategoryId || 'Other';
+      const subCategoryName = subCategoryId;
       if (!subCategoryDishCounts[subCategoryName]) {
         subCategoryDishCounts[subCategoryName] = 0;
       }
