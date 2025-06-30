@@ -132,16 +132,25 @@ const StyledLogoutButton = styled(Button)(({ theme }) => ({
   },
 }));
 
-const StyledDrawer = styled(Drawer)(({ theme }) => ({
+const StyledDrawer = styled(Drawer)(({ theme, anchor }) => ({
   '& .MuiDrawer-paper': {
     background: 'linear-gradient(180deg, #FCECDD 0%, #FFF8F0 100%)',
     color: '#4B4B4B',
     width: '250px',
     padding: theme.spacing(3),
-    borderLeft: '3px solid #FF8C8C',
-    borderTopLeftRadius: '20px',
-    borderBottomLeftRadius: '20px',
-    boxShadow: '-6px 0 20px rgba(75, 75, 75, 0.15)',
+    ...(anchor === 'right'
+      ? {
+          borderRight: '3px solid #FF8C8C',
+          borderTopRightRadius: '20px',
+          borderBottomRightRadius: '20px',
+          boxShadow: '6px 0 20px rgba(75, 75, 75, 0.15)',
+        }
+      : {
+          borderLeft: '3px solid #FF8C8C',
+          borderTopLeftRadius: '20px',
+          borderBottomLeftRadius: '20px',
+          boxShadow: '-6px 0 20px rgba(75, 75, 75, 0.15)',
+        }),
     position: 'relative',
     overflow: 'hidden',
     '&::before': {
@@ -151,7 +160,7 @@ const StyledDrawer = styled(Drawer)(({ theme }) => ({
       left: 0,
       width: '100%',
       height: '100%',
-      background: 'url("data:image/svg+xml,%3Csvg opacity=\"0.03\" width=\"100\" height=\"100\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cpath d=\"M50 20c-16.5 0-30 13.5-30 30s13.5 30 30 30 30-13.5 30-30-13.5-30-30-30zm0 50c-11 0-20-9-20-20s9-20 20-20 20 9 20 20-9 20-20 20z\" fill=\"%23FFC288\"/%3E%3C/svg%3E") repeat',
+      background: 'url("data:image/svg+xml,%3Csvg opacity=\\"0.03\\" width=\\"100\\" height=\\"100\\" xmlns=\\"http://www.w3.org/2000/svg\\"%3E%3Cpath d=\\"M50 20c-16.5 0-30 13.5-30 30s13.5 30 30 30 30-13.5 30-30-13.5-30-30-30zm0 50c-11 0-20-9-20-20s9-20 20-20 20 9 20 20-9 20-20 20z\\" fill=\\"%23FFC288\\"/%3E%3C/svg%3E") repeat',
       zIndex: 0,
     },
     [theme.breakpoints.down('sm')]: {
@@ -160,6 +169,7 @@ const StyledDrawer = styled(Drawer)(({ theme }) => ({
     },
   },
 }));
+
 
 const StyledListItem = styled(ListItem)(({ theme }) => ({
   borderRadius: '12px',
@@ -407,6 +417,7 @@ const Navbar = ({ user, role }) => {
         anchor="right"
         open={mobileOpen}
         onClose={handleDrawerToggle}
+        anchorProp="right" 
         ModalProps={{ keepMounted: true }}
       >
         <motion.div
