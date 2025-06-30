@@ -11190,29 +11190,33 @@ app.post('/api/compose-latex', async (req, res) => {
 
     const { orderId, customerName, numberOfPersons, functionDate, functionName, items, mealType } = order;
 
-  let formattedDate = 'N/A';
-  try {
-    let date;
-
-    if (functionDate?.toDate) {
-      date = new Date(functionDate.toDate());
-    } else if (functionDate) {
-      date = new Date(functionDate);
+    let formattedDate = 'N/A';
+    try {
+      let date;
+      if (functionDate && typeof functionDate === 'object') {
+        if (functionDate.toDate) {
+          date = functionDate.toDate();
+        } else if (typeof functionDate.seconds === 'number') {
+          date = new Date(functionDate.seconds * 1000);
+        }
+      } else if (functionDate && typeof functionDate === 'string') {
+        date = new Date(functionDate);
+      } else if (functionDate instanceof Date) {
+        date = functionDate;
+      }
+      if (date && !isNaN(date.getTime())) {
+        formattedDate = date.toLocaleDateString('en-US', {
+          weekday: 'long',
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        });
+      } else {
+        console.warn('Invalid date parsed:', date);
+      }
+    } catch (error) {
+      console.error('Error parsing functionDate:', error.message, 'Value:', functionDate);
     }
-
-    if (date && !isNaN(date.getTime())) {
-      formattedDate = date.toLocaleDateString('en-US', {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-      });
-    } else {
-      console.warn('Invalid date parsed:', date);
-    }
-  } catch (error) {
-    console.error('Error parsing functionDate:', error.message, 'Value:', functionDate);
-  }
 
 
     const doc = new PDFDocument({ size: 'A4', margin: 30 });
