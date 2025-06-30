@@ -1067,10 +1067,10 @@ const CustomerOrderHistory = () => {
       setLoading(true);
       const orderData = await getCustomerOrders(user.uid);
       console.log('Fetched orders:', orderData);
-      // Sort orders by functionDate in descending order (latest first)
+      // Sort orders by createdAt in descending order (latest created order first)
       const sortedOrders = (orderData || []).sort((a, b) => {
-        const dateA = a.functionDate ? new Date(a.functionDate.toDate ? a.functionDate.toDate() : a.functionDate) : new Date(0);
-        const dateB = b.functionDate ? new Date(b.functionDate.toDate ? b.functionDate.toDate() : b.functionDate) : new Date(0);
+        const dateA = a.createdAt ? new Date(a.createdAt.toDate ? a.createdAt.toDate() : a.createdAt) : new Date(0);
+        const dateB = b.createdAt ? new Date(b.createdAt.toDate ? b.createdAt.toDate() : b.createdAt) : new Date(0);
         return dateB - dateA;
       });
       setOrders(sortedOrders);
