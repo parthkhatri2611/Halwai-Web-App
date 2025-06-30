@@ -26,14 +26,57 @@ import { signOut } from 'firebase/auth';
 import NotificationBar from './NotificationBar';
 
 
+// const StyledAppBar = styled(AppBar)(({ theme }) => ({
+//   background: 'linear-gradient(135deg, #FCECDD 0%, #FFF8F0 100%)', 
+//   backdropFilter: 'blur(10px)',
+//   backgroundColor: 'rgba(252, 236, 221, 0.9)', 
+//   boxShadow: '0 8px 24px rgba(75, 75, 75, 0.1)', 
+//   borderBottom: '2px solid #FF8C8C', 
+//   padding: theme.spacing(1, 3),
+//   position: 'relative',
+//   overflow: 'hidden',
+//   '&::before': {
+//     content: '""',
+//     position: 'absolute',
+//     top: 0,
+//     left: 0,
+//     width: '100%',
+//     height: '100%',
+//     background: 'url("data:image/svg+xml,%3Csvg opacity="0.03" width="100" height="100" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath d="M50 20c-16.5 0-30 13.5-30 30s13.5 30 30 30 30-13.5 30-30-13.5-30-30-30zm0 50c-11 0-20-9-20-20s9-20 20-20 20 9 20 20-9 20-20 20z" fill="%23FF8C8C"/%3E%3C/svg%3E") repeat',
+//     zIndex: 0,
+//   },
+//   '&::after': {
+//     content: '""',
+//     position: 'absolute',
+//     bottom: 0,
+//     left: 0,
+//     width: '100%',
+//     height: '2px',
+//     background: 'linear-gradient(90deg, transparent, #FFC288, transparent)',
+//     animation: 'glow 3s infinite ease-in-out',
+//   },
+//   [theme.breakpoints.down('sm')]: {
+//     padding: theme.spacing(0.5, 2),
+//   },
+//   '@keyframes glow': {
+//     '0%': { transform: 'translateX(-100%)' },
+//     '50%': { transform: 'translateX(100%)' },
+//     '100%': { transform: 'translateX(-100%)' },
+//   },
+// }));
+
+
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
-  background: 'linear-gradient(135deg, #FCECDD 0%, #FFF8F0 100%)', 
+  position: 'fixed',
+  top: 0,
+  left: 0,
+  zIndex: 1200,
+  background: 'linear-gradient(135deg, #FCECDD 0%, #FFF8F0 100%)',
   backdropFilter: 'blur(10px)',
-  backgroundColor: 'rgba(252, 236, 221, 0.9)', 
-  boxShadow: '0 8px 24px rgba(75, 75, 75, 0.1)', 
-  borderBottom: '2px solid #FF8C8C', 
+  backgroundColor: 'rgba(252, 236, 221, 0.9)',
+  boxShadow: '0 8px 24px rgba(75, 75, 75, 0.1)',
+  borderBottom: '2px solid #FF8C8C',
   padding: theme.spacing(1, 3),
-  position: 'relative',
   overflow: 'hidden',
   '&::before': {
     content: '""',
@@ -42,7 +85,7 @@ const StyledAppBar = styled(AppBar)(({ theme }) => ({
     left: 0,
     width: '100%',
     height: '100%',
-    background: 'url("data:image/svg+xml,%3Csvg opacity="0.03" width="100" height="100" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath d="M50 20c-16.5 0-30 13.5-30 30s13.5 30 30 30 30-13.5 30-30-13.5-30-30-30zm0 50c-11 0-20-9-20-20s9-20 20-20 20 9 20 20-9 20-20 20z" fill="%23FF8C8C"/%3E%3C/svg%3E") repeat',
+    background: 'url("data:image/svg+xml,%3Csvg opacity=\"0.03\" width=\"100\" height=\"100\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cpath d=\"M50 20c-16.5 0-30 13.5-30 30s13.5 30 30 30 30-13.5 30-30-13.5-30-30-30zm0 50c-11 0-20-9-20-20s9-20 20-20 20 9 20 20-9 20-20 20z\" fill=\"%23FF8C8C\"/%3E%3C/svg%3E") repeat',
     zIndex: 0,
   },
   '&::after': {
@@ -64,6 +107,7 @@ const StyledAppBar = styled(AppBar)(({ theme }) => ({
     '100%': { transform: 'translateX(-100%)' },
   },
 }));
+
 
 const StyledNavButton = styled(Button)(({ theme }) => ({
   color: '#4B4B4B', 

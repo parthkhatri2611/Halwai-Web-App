@@ -11577,10 +11577,14 @@ app.post('/api/compose-latex', async (req, res) => {
         if (categoryName === 'Khana Khazana' && subCategoryName !== 'Items') {
           currentY = checkPageBreak(currentY, 40, `subcategory-${subCategoryName}`);
           doc
-            .fillColor('#800000')
-            .font('Merriweather-Bold')
+            .fillColor('#7A0000')
+            .rect(50, currentY, doc.page.width - 80, 20)
+            .fill();
+          doc
+            .fillColor('white')
+            .font(isHindi(subCategoryName) ? 'NotoSerifDevanagari-Bold' : 'Merriweather-Bold')
             .fontSize(14)
-            .text(subCategoryName, 50, currentY, { align: 'left', lineBreak: false });
+            .text(subCategoryName, 50, currentY + 3, { align: 'left', lineBreak: false });
           currentY += 20;
         }
 
