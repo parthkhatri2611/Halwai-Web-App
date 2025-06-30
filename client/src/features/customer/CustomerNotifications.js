@@ -92,7 +92,7 @@ const CustomerNotifications = () => {
   useEffect(() => {
     if (user) {
       fetchNotifications();
-      const interval = setInterval(fetchNotifications, 10000); // Refresh every 10 seconds
+      const interval = setInterval(fetchNotifications, 1000); // Refresh every 10 seconds
       return () => clearInterval(interval); // Clean up interval on unmount
     }
   }, [user]);

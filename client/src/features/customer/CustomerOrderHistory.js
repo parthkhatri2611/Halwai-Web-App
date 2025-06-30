@@ -803,7 +803,7 @@ const CustomerOrderHistory = () => {
                     <ListItem>
                       <ListItemText
                         primary={`${order.functionName || 'Unknown Function'} (${order.mealType || 'Unknown Meal'})`}
-                        secondary={`Date: ${order.functionDate ? new Date(order.functionDate).toDateString() : 'N/A'} | Persons: ${order.numberOfPersons || 'N/A'} | Status: ${order.status || 'N/A'}`}
+                        secondary={`Date: ${order.functionDate ? new Date(order.functionDate.toDate ? order.functionDate.toDate() : order.functionDate).toDateString() : 'N/A'} | Persons: ${order.numberOfPersons || 'N/A'} | Status: ${order.status || 'N/A'}`}
                         primaryTypographyProps={{ fontFamily: '"Montserrat", sans-serif', fontWeight: 600, color: '#4B4B4B' }}
                         secondaryTypographyProps={{ fontFamily: '"Montserrat", sans-serif', color: '#4B4B4B', opacity: 0.7 }}
                       />
