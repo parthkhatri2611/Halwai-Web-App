@@ -13353,7 +13353,7 @@ const renderIngredientsTable = (doc, currentY, ingredients, numberOfPersons, sca
 
   let remainingIngredients = [...ingredients];
 
-  while (remainingItems.length > 0) {
+  while (remainingIngredients.length > 0) {
     currentY = checkPageBreak(currentY, headerHeight + rowHeight, `table-${itemName}`);
     console.log(`Rendering ingredients table for ${itemName}, remaining: ${remainingIngredients.length}`);
 
@@ -13936,7 +13936,7 @@ app.post('/api/compose-latex', async (req, res) => {
         tentItems,
         'Tent Items',
         numberOfPersons,
-        true, // Changed from false to true to scale quantities
+        true,
         checkPageBreak
       );
 
