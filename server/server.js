@@ -13927,7 +13927,7 @@ app.post('/api/compose-latex', async (req, res) => {
         ghareluSaman,
         'Gharelu Items',
         numberOfPersons,
-        false,
+        true,
         checkPageBreak
       );
       currentY = renderTable(
