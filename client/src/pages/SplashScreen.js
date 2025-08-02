@@ -27,8 +27,8 @@ const SplashScreen = () => {
         playsInline
         className="splash-video"
       >
-        <source src="assets/videos/splash-video.mp4" type="video/mp4"/>
-        <source src= "assets/videos/splash-video.mp4" type="video/mp4" />
+        <source src="assets/videos/festival-background.mp4" type="video/mp4"/>
+        <source src= "assets/videos/festival-background.mp4" type="video/mp4" />
         Your browser does not support the video tag.
       </video>
       <div className="splash-overlay">

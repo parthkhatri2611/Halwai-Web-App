@@ -38,3 +38,30 @@
 .customer {
   background-color: #4caf50;
 }
+
+
+
+
+.role-selection-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+  opacity: 0.25; /* Soft background feel */
+}
+
+.role-selection-container {
+  position: relative; /* Required to make z-index work */
+  overflow: hidden;
+}
+
+.role-selection-overlay {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  color: white;
+  backdrop-filter: brightness(120%);
+}
