@@ -264,14 +264,23 @@ const Navbar = ({ user, role }) => {
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  // const handleLogout = async () => {
+  //   try {
+  //     await signOut(auth);
+  //     navigate('/');
+  //   } catch (error) {
+  //     console.error('Error logging out:', error);
+  //   }
+  // };
+
   const handleLogout = async () => {
-    try {
-      await signOut(auth);
-      navigate('/');
-    } catch (error) {
-      console.error('Error logging out:', error);
-    }
-  };
+  try {
+    await signOut(auth);
+    navigate('/halwai/login', { replace: true });
+  } catch (error) {
+    console.error('Error logging out:', error);
+  }
+};
 
   const handleNavigate = (path) => {
     navigate(path);

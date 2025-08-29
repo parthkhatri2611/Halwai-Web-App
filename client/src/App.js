@@ -16,6 +16,11 @@ import CustomerOrderHistory from './features/customer/CustomerOrderHistory';
 import HalwaiOrderManagement from './features/halwai/HalwaiOrderManagement';
 import './App.css';
 
+
+import ProtectedRoute from "./components/ProtectedRoute";
+import PublicRoute from "./components/PublicRoute";
+
+
 const theme = createTheme({
   typography: {
     fontFamily: '"Poppins", sans-serif',
@@ -34,7 +39,7 @@ function App() {
       <CssBaseline />
       <Router>
         <div className="App">
-          <Routes>
+          {/* <Routes>
             <Route path="/" element={<SplashScreen />} />
             <Route path="/role-selection" element={<RoleSelection />} />
             <Route path="/halwai/login" element={<HalwaiLogin />} />
@@ -56,7 +61,52 @@ function App() {
             <Route path="/customer/cart" element={<div>Customer Cart (TBD)</div>} />
             <Route path="/customer/chat" element={<div>Customer Chat (TBD)</div>} />
             <Route path="/customer/profile" element={<div>Customer Profile (TBD)</div>} />
-          </Routes>
+          </Routes> */}
+
+
+          <Routes>
+  <Route path="/" element={<SplashScreen />} />
+  <Route path="/role-selection" element={<RoleSelection />} />
+
+  {/* Public Routes */}
+  <Route path="/halwai/login" element={
+    <PublicRoute><HalwaiLogin /></PublicRoute>
+  } />
+  <Route path="/halwai/register" element={
+    <PublicRoute><HalwaiRegister /></PublicRoute>
+  } />
+  <Route path="/customer/login" element={
+    <PublicRoute><CustomerLogin /></PublicRoute>
+  } />
+  <Route path="/customer/register" element={
+    <PublicRoute><CustomerRegister /></PublicRoute>
+  } />
+
+  {/* Protected Routes */}
+  <Route path="/halwai/dashboard" element={
+    <ProtectedRoute><HalwaiDashboard /></ProtectedRoute>
+  } />
+  <Route path="/customer/dashboard" element={
+    <ProtectedRoute><CustomerDashboard /></ProtectedRoute>
+  } />
+  <Route path="/halwai/categories/*" element={
+    <ProtectedRoute><CategoryManagementRoutes /></ProtectedRoute>
+  } />
+  <Route path="/customer/categories" element={
+    <ProtectedRoute><CategoryBrowser /></ProtectedRoute>
+  } />
+  <Route path="/halwai/calendar" element={
+    <ProtectedRoute><CalendarManagement /></ProtectedRoute>
+  } />
+  <Route path="/halwai/orders" element={
+    <ProtectedRoute><HalwaiOrderManagement /></ProtectedRoute>
+  } />
+  <Route path="/customer/orders" element={
+    <ProtectedRoute><CustomerOrderHistory /></ProtectedRoute>
+  } />
+
+</Routes>
+
         </div>
       </Router>
     </ThemeProvider>
