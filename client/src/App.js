@@ -16,10 +16,8 @@ import CustomerOrderHistory from './features/customer/CustomerOrderHistory';
 import HalwaiOrderManagement from './features/halwai/HalwaiOrderManagement';
 import './App.css';
 
-
 import ProtectedRoute from "./components/ProtectedRoute";
 import PublicRoute from "./components/PublicRoute";
-
 
 const theme = createTheme({
   typography: {
@@ -39,74 +37,34 @@ function App() {
       <CssBaseline />
       <Router>
         <div className="App">
-          {/* <Routes>
+          <Routes>
+            {/* Public Routes */}
             <Route path="/" element={<SplashScreen />} />
             <Route path="/role-selection" element={<RoleSelection />} />
-            <Route path="/halwai/login" element={<HalwaiLogin />} />
-            <Route path="/halwai/register" element={<HalwaiRegister />} />
-            <Route path="/customer/login" element={<CustomerLogin />} />
-            <Route path="/customer/register" element={<CustomerRegister />} />
-            <Route path="/halwai/dashboard" element={<HalwaiDashboard />} />
-            <Route path="/customer/dashboard" element={<CustomerDashboard />} />
-            <Route path="/halwai/categories/*" element={<CategoryManagementRoutes />} />
-            <Route path="/customer/categories" element={<CategoryBrowser />} />
-            <Route path="/halwai/calendar" element={<CalendarManagement />} />
-            <Route path="/halwai/orders" element={<HalwaiOrderManagement />} />
-            <Route path="/customer/orders" element={<CustomerOrderHistory />} />
-            <Route path="/halwai/portfolio" element={<div>Halwai Portfolio (TBD)</div>} />
-            <Route path="/halwai/analytics" element={<div>Halwai Analytics (TBD)</div>} />
-            <Route path="/halwai/cart" element={<div>Halwai Cart (TBD)</div>} />
-            <Route path="/halwai/chat" element={<div>Halwai Chat (TBD)</div>} />
-            <Route path="/halwai/profile" element={<div>Halwai Profile (TBD)</div>} />
-            <Route path="/customer/cart" element={<div>Customer Cart (TBD)</div>} />
-            <Route path="/customer/chat" element={<div>Customer Chat (TBD)</div>} />
-            <Route path="/customer/profile" element={<div>Customer Profile (TBD)</div>} />
-          </Routes> */}
+            <Route path="/halwai/login" element={<PublicRoute><HalwaiLogin /></PublicRoute>} />
+            <Route path="/halwai/register" element={<PublicRoute><HalwaiRegister /></PublicRoute>} />
+            <Route path="/customer/login" element={<PublicRoute><CustomerLogin /></PublicRoute>} />
+            <Route path="/customer/register" element={<PublicRoute><CustomerRegister /></PublicRoute>} />
 
+            {/* Protected Routes */}
+            <Route path="/halwai/dashboard" element={<ProtectedRoute><HalwaiDashboard /></ProtectedRoute>} />
+            <Route path="/customer/dashboard" element={<ProtectedRoute><CustomerDashboard /></ProtectedRoute>} />
+            <Route path="/halwai/categories/*" element={<ProtectedRoute><CategoryManagementRoutes /></ProtectedRoute>} />
+            <Route path="/customer/categories" element={<ProtectedRoute><CategoryBrowser /></ProtectedRoute>} />
+            <Route path="/halwai/calendar" element={<ProtectedRoute><CalendarManagement /></ProtectedRoute>} />
+            <Route path="/halwai/orders" element={<ProtectedRoute><HalwaiOrderManagement /></ProtectedRoute>} />
+            <Route path="/customer/orders" element={<ProtectedRoute><CustomerOrderHistory /></ProtectedRoute>} />
 
-          <Routes>
-  <Route path="/" element={<SplashScreen />} />
-  <Route path="/role-selection" element={<RoleSelection />} />
-
-  {/* Public Routes */}
-  <Route path="/halwai/login" element={
-    <PublicRoute><HalwaiLogin /></PublicRoute>
-  } />
-  <Route path="/halwai/register" element={
-    <PublicRoute><HalwaiRegister /></PublicRoute>
-  } />
-  <Route path="/customer/login" element={
-    <PublicRoute><CustomerLogin /></PublicRoute>
-  } />
-  <Route path="/customer/register" element={
-    <PublicRoute><CustomerRegister /></PublicRoute>
-  } />
-
-  {/* Protected Routes */}
-  <Route path="/halwai/dashboard" element={
-    <ProtectedRoute><HalwaiDashboard /></ProtectedRoute>
-  } />
-  <Route path="/customer/dashboard" element={
-    <ProtectedRoute><CustomerDashboard /></ProtectedRoute>
-  } />
-  <Route path="/halwai/categories/*" element={
-    <ProtectedRoute><CategoryManagementRoutes /></ProtectedRoute>
-  } />
-  <Route path="/customer/categories" element={
-    <ProtectedRoute><CategoryBrowser /></ProtectedRoute>
-  } />
-  <Route path="/halwai/calendar" element={
-    <ProtectedRoute><CalendarManagement /></ProtectedRoute>
-  } />
-  <Route path="/halwai/orders" element={
-    <ProtectedRoute><HalwaiOrderManagement /></ProtectedRoute>
-  } />
-  <Route path="/customer/orders" element={
-    <ProtectedRoute><CustomerOrderHistory /></ProtectedRoute>
-  } />
-
-</Routes>
-
+            {/* Optional protected placeholders */}
+            <Route path="/halwai/portfolio" element={<ProtectedRoute><div>Halwai Portfolio (TBD)</div></ProtectedRoute>} />
+            <Route path="/halwai/analytics" element={<ProtectedRoute><div>Halwai Analytics (TBD)</div></ProtectedRoute>} />
+            <Route path="/halwai/cart" element={<ProtectedRoute><div>Halwai Cart (TBD)</div></ProtectedRoute>} />
+            <Route path="/halwai/chat" element={<ProtectedRoute><div>Halwai Chat (TBD)</div></ProtectedRoute>} />
+            <Route path="/halwai/profile" element={<ProtectedRoute><div>Halwai Profile (TBD)</div></ProtectedRoute>} />
+            <Route path="/customer/cart" element={<ProtectedRoute><div>Customer Cart (TBD)</div></ProtectedRoute>} />
+            <Route path="/customer/chat" element={<ProtectedRoute><div>Customer Chat (TBD)</div></ProtectedRoute>} />
+            <Route path="/customer/profile" element={<ProtectedRoute><div>Customer Profile (TBD)</div></ProtectedRoute>} />
+          </Routes>
         </div>
       </Router>
     </ThemeProvider>
