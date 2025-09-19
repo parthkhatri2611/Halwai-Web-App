@@ -340,7 +340,7 @@ const HalwaiLogin = () => {
                     'Log In'
                   )}
                 </StyledButton>
-                <StyledSecondaryButton
+                {/* <StyledSecondaryButton
                   variant="contained"
                   fullWidth
                   startIcon={<GoogleIcon />}
@@ -349,10 +349,10 @@ const HalwaiLogin = () => {
                   sx={{ mt: 2 }}
                 >
                   Sign In with Google
-                </StyledSecondaryButton>
+                </StyledSecondaryButton> */}
                 <Box sx={{ mt: 2, textAlign: 'center' }}>
                   <BodyTypography>
-                    Don't have an account?{' '}
+                    {/* Don't have an account?{' '}
                     <StyledLink
                       href="#"
                       onClick={(e) => {
@@ -361,7 +361,7 @@ const HalwaiLogin = () => {
                       }}
                     >
                       Register
-                    </StyledLink>
+                    </StyledLink> */}
                   </BodyTypography>
                 </Box>
               </form>
